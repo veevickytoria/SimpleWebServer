@@ -128,11 +128,14 @@ public class HttpResponseFactory {
 	 * Creates a {@link HttpResponse} object for sending version not supported response.
 	 * 
 	 * @param connection Supported values are {@link Protocol#OPEN} and {@link Protocol#CLOSE}.
-	 * @return A {@link HttpResponse} object represent 505 status.
+	 * @return A {@link HttpResponse} object represent 501 status.
 	 */
-	public static HttpResponse create505NotSupported(String connection) {
-		// TODO fill in this method
-		return null;
+	public static HttpResponse create501NotSupported(String connection) {
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NOT_IMPLEMENTED_CODE,
+				Protocol.NOT_IMPLEMENTED_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		
+		return response;
 	}
 	
 	/**
