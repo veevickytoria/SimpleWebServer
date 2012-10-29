@@ -113,6 +113,10 @@ public class HttpRequest {
 		}
 		
 		request.method = tokenizer.nextToken();		// GET
+		
+		if(request.method != Protocol.GET){
+			throw new ProtocolException(Protocol.NOT_IMPLEMENTED_CODE, Protocol.BAD_REQUEST_TEXT);
+		}
 		request.uri = tokenizer.nextToken();		// /somedir/page.html
 		request.version = tokenizer.nextToken();	// HTTP/1.1
 		
