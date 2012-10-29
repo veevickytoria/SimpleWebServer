@@ -31,6 +31,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 import server.Server;
+import org.apache.log4j.*;
 
 /**
  * The application window for the {@link Server}, where you can update
@@ -39,6 +40,7 @@ import server.Server;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class WebServer extends JFrame {
+	private static final Logger logger = Logger.getLogger(WebServer.class);
 	private static final long serialVersionUID = 5042579745743827174L;
 
 	private JPanel panelRunServer;
@@ -259,6 +261,8 @@ public class WebServer extends JFrame {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				BasicConfigurator.configure();
+				logger.debug("Webserver running");
 				new WebServer().setVisible(true);
 			}
 		});
