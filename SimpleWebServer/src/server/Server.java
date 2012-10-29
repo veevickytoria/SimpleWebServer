@@ -28,6 +28,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 /**
  * This represents a welcoming server for the incoming
  * TCP request from a HTTP client such as a web browser. 
@@ -35,16 +37,19 @@ import java.util.ArrayList;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
+	private static final Logger logger = Logger.getLogger(Server.class);
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
 	private ServerSocket welcomeSocket;
-	private ArrayList<InetAddress> clients;
+	private ArrayList<ClientInfo> clients;
 	
 	private long connections;
 	private long serviceTime;
 	
 	private WebServer window;
+	
+	public Blacklist Blacklist;
 	/**
 	 * @param rootDirectory
 	 * @param port
@@ -56,7 +61,8 @@ public class Server implements Runnable {
 		this.connections = 0;
 		this.serviceTime = 0;
 		this.window = window;
-		this.clients = new ArrayList<InetAddress>();
+		this.Blacklist = new Blacklist();
+		this.clients = new ArrayList<ClientInfo>();
 	}
 
 	/**
@@ -109,6 +115,38 @@ public class Server implements Runnable {
 	 */
 	public synchronized void incrementServiceTime(long value) {
 		this.serviceTime += value;
+	}
+	
+	public synchronized void addClient(InetAddress ip)
+	{
+		ClientInfo client = this.getClient(ip);
+		if (client == null)
+		{
+			this.clients.add(new ClientInfo(ip));
+		}else
+		{
+			if(client.isAnAttacker())
+			{
+				logger.fatal("ATTACK from "+ip.toString()+"!! Attacker added to blacklist");
+				this.Blacklist.addAddressToBlacklist(ip);
+			}else
+			{
+				client.incrementRequest();
+			}
+		}
+	}
+	
+	private synchronized ClientInfo getClient(InetAddress ip)
+	{
+		for (int i=0; i<this.clients.size(); i++)
+		{
+			ClientInfo client = this.clients.get(i);
+			if (client.isIP(ip))
+			{
+				return client;
+			}
+		}
+		return null;
 	}
 
 	/**

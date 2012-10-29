@@ -130,7 +130,7 @@ public class HttpResponseFactory {
 	 * @param connection Supported values are {@link Protocol#OPEN} and {@link Protocol#CLOSE}.
 	 * @return A {@link HttpResponse} object represent 501 status.
 	 */
-	public static HttpResponse create501NotSupported(String connection) {
+	public static HttpResponse create501NotImplemented(String connection) {
 		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NOT_IMPLEMENTED_CODE,
 				Protocol.NOT_IMPLEMENTED_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
@@ -145,7 +145,17 @@ public class HttpResponseFactory {
 	 * @return A {@link HttpResponse} object represent 304 status.
 	 */
 	public static HttpResponse create304NotModified(String connection) {
-		// TODO fill in this method
-		return null;
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NOT_MODIFIED,
+				Protocol.NOT_MODIFIED_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		return response;
+	}
+	
+	public static HttpResponse create401AccessDenied(String connection)
+	{
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.ACCESS_DENIED_CODE,
+				Protocol.ACCESS_DENIED_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		return response;
 	}
 }
