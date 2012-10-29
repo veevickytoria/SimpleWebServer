@@ -44,6 +44,8 @@ public class Server implements Runnable {
 	
 	private WebServer window;
 	
+	private ResponseCSVLogger timeLog;
+	
 	public Blacklist Blacklist;
 	/**
 	 * @param rootDirectory
@@ -57,6 +59,7 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.Blacklist = new Blacklist();
+		this.timeLog = ResponseCSVLogger.getInstance();
 	}
 
 	/**
@@ -109,6 +112,7 @@ public class Server implements Runnable {
 	 * @param value
 	 */
 	public synchronized void incrementServiceTime(long value) {
+		this.timeLog.logTurnaroundValue(value);
 		this.serviceTime += value;
 	}
 
@@ -160,6 +164,7 @@ public class Server implements Runnable {
 			socket.close();
 		}
 		catch(Exception e){}
+		this.timeLog.closeWriter();
 	}
 	
 	/**

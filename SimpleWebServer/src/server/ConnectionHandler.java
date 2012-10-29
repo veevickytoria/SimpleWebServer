@@ -101,6 +101,7 @@ public class ConnectionHandler implements Runnable {
 		{
 			response = HttpResponseFactory.create401AccessDenied(Protocol.CLOSE);
 			log.warn("Blacklisted Address attemped access!");
+			
 			try {
 				response.write(outStream);
 			} catch (Exception e) {

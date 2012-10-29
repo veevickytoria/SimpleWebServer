@@ -28,9 +28,7 @@
  
 package server;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -42,17 +40,20 @@ import org.apache.log4j.Logger;
  */
 public class Blacklist {
 	private ArrayList<InetAddress> list;
+	private Logger log;
 	
 	public Blacklist()
 	{
-		//Logger log = Logger.getLogger(Blacklist.class);
+		this.log = Logger.getLogger(Blacklist.class);
 		this.list = new ArrayList<InetAddress>();
+		/*
 		try {
 			list.add(Inet4Address.getByAddress(getBytesFromAddress("10.0.0.5")));
+			this.log.info("Added 10.0.0.5 to the blacklist");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 	
 	public boolean isBlacklisted(InetAddress check)
@@ -64,11 +65,13 @@ public class Blacklist {
 	
 	public void addAddressToBlacklist(InetAddress add)
 	{
+		this.log.info(add.toString() + " added to blacklist");
 		list.add(add);
 	}
 	
 	/**
-	 * Function to parse a string to a byte-array representing its IPv4 address
+	 * Function to parse a string to a byte-array representing its IPv4 address.
+	 * Used for testing.
 	 * Taken from the Apache test library at: 
 	 * http://svn.apache.org/repos/asf/james/server/trunk/dnsservice-library/src/test/java/org/apache/james/dnsservice/library/inetnetwork/model/InetNetworkTest.java
 	 */
