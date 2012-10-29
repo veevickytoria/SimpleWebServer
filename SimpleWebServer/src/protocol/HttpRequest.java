@@ -25,7 +25,6 @@ package protocol;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -33,8 +32,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +47,7 @@ public class HttpRequest{
 	private String version;
 	private Map<String, String> header;
 	private Date requestStartTime;
-	private static long GATEWAY_TIMEOUT_IN_SECS = 1;
+	private static long GATEWAY_TIMEOUT_IN_SECS = 10;
 	
 	private HttpRequest() {
 		this.header = new HashMap<String, String>();
@@ -124,7 +121,9 @@ public class HttpRequest{
 	public static HttpRequest read(InputStream inputStream) throws Exception {
 		// We will fill this object with the data from input stream and return it
 		HttpRequest request = new HttpRequest();
-		Thread.sleep(GATEWAY_TIMEOUT_IN_SECS*1000);
+		
+		//Comment out the following line to fake a Timeout to test
+		//Thread.sleep(GATEWAY_TIMEOUT_IN_SECS*1000);
 		
 		InputStreamReader inStreamReader = new InputStreamReader(inputStream);
 		BufferedReader reader = new BufferedReader(inStreamReader);
@@ -150,7 +149,6 @@ public class HttpRequest{
 		logger.debug("Request method: "+ request.method);
 		
 		if(!request.method.equalsIgnoreCase(Protocol.GET)){
-			logger.debug("501 NOT IMPLEMENTED method");
 			throw new ProtocolException(Protocol.NOT_IMPLEMENTED_CODE, Protocol.NOT_IMPLEMENTED_TEXT);
 		}
 		request.uri = tokenizer.nextToken();		// /somedir/page.html
@@ -201,10 +199,8 @@ public class HttpRequest{
 	
 	private void checkTimeout() throws Exception
 	{
-		logger.debug("checking time out");
 		if (new Date().getTime() - this.requestStartTime.getTime() > GATEWAY_TIMEOUT_IN_SECS*1000)
 		{
-			logger.debug("Throwing timeout exception");
 			throw new ProtocolException(Protocol.GATEWAY_TIMEOUT_CODE, Protocol.GATEWAY_TIMEOUT_TEXT);
 		}
 	}

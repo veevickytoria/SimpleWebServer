@@ -262,7 +262,7 @@ public class WebServer extends JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				BasicConfigurator.configure();
-				logger.debug("Webserver running");
+				logger.debug("Webserver started running");
 				new WebServer().setVisible(true);
 			}
 		});

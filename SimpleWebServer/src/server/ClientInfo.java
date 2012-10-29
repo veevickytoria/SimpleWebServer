@@ -65,7 +65,8 @@ public class ClientInfo {
 	
 	public boolean isAnAttacker()
 	{
-		/*
+		//The following logic needs to be commented out to be able to attack
+		//instead of using it, just do "return false;" so it doesn't identify the tester as an attacker
 		//REQUEST_COUNT_LIMIT requests of the same file in a TIMEOUT_IN_MINS window.
 		if (this.request > REQUEST_COUNT_LIMIT){
 			Date now = new Date();
@@ -74,7 +75,5 @@ public class ClientInfo {
 		}else{
 			return false;
 		}
-		*/
-		return false;
 	}
 }

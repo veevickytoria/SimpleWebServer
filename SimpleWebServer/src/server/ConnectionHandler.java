@@ -43,7 +43,6 @@ import org.apache.log4j.*;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class ConnectionHandler implements Runnable {
-	private static final Logger logger = Logger.getLogger(ConnectionHandler.class);
 	private Server server;
 	private Socket socket;
 	

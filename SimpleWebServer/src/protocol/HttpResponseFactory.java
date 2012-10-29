@@ -28,12 +28,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 /**
  * This is a factory to produce various kind of HTTP responses.
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class HttpResponseFactory {
+	private static final Logger logger = Logger.getLogger(HttpResponseFactory.class);
 	/**
 	 * Convenience method for adding general header to the supplied response object.
 	 * 
@@ -88,7 +91,7 @@ public class HttpResponseFactory {
 		if(mime != null) { 
 			response.put(Protocol.CONTENT_TYPE, mime);
 		}
-		
+		logger.debug("Generating 200 OK response");
 		return response;
 	}
 	
@@ -105,6 +108,7 @@ public class HttpResponseFactory {
 		// Lets fill up header fields with more information
 		fillGeneralHeader(response, connection);
 		
+		logger.debug("Generating 400 Bad Request response");
 		return response;
 	}
 	
@@ -121,6 +125,7 @@ public class HttpResponseFactory {
 		// Lets fill up the header fields with more information
 		fillGeneralHeader(response, connection);
 		
+		logger.debug("Generating 404 Not Found response");
 		return response;	
 	}
 	
@@ -135,6 +140,7 @@ public class HttpResponseFactory {
 				Protocol.NOT_IMPLEMENTED_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
 		
+		logger.debug("Generating 501 Not Implemented response");
 		return response;
 	}
 	
@@ -148,6 +154,8 @@ public class HttpResponseFactory {
 		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NOT_MODIFIED,
 				Protocol.NOT_MODIFIED_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
+		
+		logger.debug("Generating 304 Not Modified response");
 		return response;
 	}
 	
@@ -156,6 +164,8 @@ public class HttpResponseFactory {
 		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.ACCESS_DENIED_CODE,
 				Protocol.ACCESS_DENIED_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
+		
+		logger.debug("Generating 401 Access Denied OK response");
 		return response;
 	}
 	
@@ -164,6 +174,8 @@ public class HttpResponseFactory {
 		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.FORBIDDEN_CODE,
 				Protocol.FORBIDDEN_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
+		
+		logger.debug("Generating 403 Forbidden response");
 		return response;
 	}
 	
@@ -172,6 +184,8 @@ public class HttpResponseFactory {
 		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.GATEWAY_TIMEOUT_CODE,
 				Protocol.GATEWAY_TIMEOUT_TEXT, new HashMap<String, String>(), null);
 		fillGeneralHeader(response, connection);
+		
+		logger.debug("Generating 504 Gateway Timed Out response");
 		return response;
 	}
 }

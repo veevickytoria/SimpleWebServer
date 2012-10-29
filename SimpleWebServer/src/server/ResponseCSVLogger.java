@@ -33,8 +33,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * @author Michael Eaton, Victoria Zheng
@@ -45,8 +43,6 @@ public class ResponseCSVLogger {
 	private static final String FILE_NAME = "ResponseLog";
 	private static final String FILE_EXTENSION = ".csv";
 	private File logFile;
-	private Logger logger;
-	
 	public static ResponseCSVLogger getInstance()
 	{
 		if(instance == null)
@@ -58,7 +54,6 @@ public class ResponseCSVLogger {
 	
 	private ResponseCSVLogger()
 	{
-		this.logger = Logger.getLogger(ResponseCSVLogger.class);
 		Date date = new Date();
 		String dateString = date.getMonth() + "-" + date.getDate() + "-" + date.getTime();
 		File log = new File(FILE_NAME + dateString + FILE_EXTENSION);
