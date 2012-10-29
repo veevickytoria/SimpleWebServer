@@ -25,6 +25,7 @@ package protocol;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -110,6 +111,7 @@ public class HttpRequest {
 	 * <tt>HttpRequest</tt> object out of the raw data.
 	 * 
 	 * @param inputStream The input stream to read from.
+	 * @param inetAdr TODO
 	 * @return A <tt>HttpRequest</tt> object.
 	 * @throws Exception Throws either {@link ProtocolException} for bad request or 
 	 * {@link IOException} for socket input stream read errors.
@@ -139,7 +141,7 @@ public class HttpRequest {
 		request.method = tokenizer.nextToken();		// GET
 		logger.debug("Request method: "+ request.method);
 		
-		if(!request.method.equals(Protocol.GET)){
+		if(!request.method.equalsIgnoreCase(Protocol.GET)){
 			logger.debug("501 NOT IMPLEMENTED method");
 			throw new ProtocolException(Protocol.NOT_IMPLEMENTED_CODE, Protocol.NOT_IMPLEMENTED_TEXT);
 		}

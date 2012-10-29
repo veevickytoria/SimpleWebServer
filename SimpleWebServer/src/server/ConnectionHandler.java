@@ -24,6 +24,7 @@ package server;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
@@ -73,9 +74,12 @@ public class ConnectionHandler implements Runnable {
 		
 		InputStream inStream = null;
 		OutputStream outStream = null;
+		InetAddress inetAdr = null;
+		
 		
 		try {
 			inStream = this.socket.getInputStream();
+			inetAdr =  this.socket.getInetAddress();
 			outStream = this.socket.getOutputStream();
 		}
 		catch(Exception e) {
@@ -147,6 +151,7 @@ public class ConnectionHandler implements Runnable {
 
 			// Increment number of connections by 1
 			server.incrementConnections(1);
+			server.addClient(inetAdr);
 			// Get the end time
 			long end = System.currentTimeMillis();
 			this.server.incrementServiceTime(end-start);

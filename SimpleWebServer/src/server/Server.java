@@ -26,6 +26,9 @@ import gui.WebServer;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 /**
  * This represents a welcoming server for the incoming
@@ -34,10 +37,12 @@ import java.net.Socket;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
+	private static final Logger logger = Logger.getLogger(Server.class);
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
 	private ServerSocket welcomeSocket;
+	private ArrayList<ClientInfo> clients;
 	
 	private long connections;
 	private long serviceTime;
@@ -59,7 +64,11 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.Blacklist = new Blacklist();
+<<<<<<< HEAD
 		this.timeLog = ResponseCSVLogger.getInstance();
+=======
+		this.clients = new ArrayList<ClientInfo>();
+>>>>>>> 14456a854ec06b7d398b9a45be10900f3393873d
 	}
 
 	/**
@@ -70,7 +79,6 @@ public class Server implements Runnable {
 	public String getRootDirectory() {
 		return rootDirectory;
 	}
-
 
 	/**
 	 * Gets the port number for this web server.
@@ -114,6 +122,38 @@ public class Server implements Runnable {
 	public synchronized void incrementServiceTime(long value) {
 		this.timeLog.logTurnaroundValue(value);
 		this.serviceTime += value;
+	}
+	
+	public synchronized void addClient(InetAddress ip)
+	{
+		ClientInfo client = this.getClient(ip);
+		if (client == null)
+		{
+			this.clients.add(new ClientInfo(ip));
+		}else
+		{
+			if(client.isAnAttacker())
+			{
+				logger.fatal("ATTACK from "+ip.toString()+"!! Attacker added to blacklist");
+				this.Blacklist.addAddressToBlacklist(ip);
+			}else
+			{
+				client.incrementRequest();
+			}
+		}
+	}
+	
+	private synchronized ClientInfo getClient(InetAddress ip)
+	{
+		for (int i=0; i<this.clients.size(); i++)
+		{
+			ClientInfo client = this.clients.get(i);
+			if (client.isIP(ip))
+			{
+				return client;
+			}
+		}
+		return null;
 	}
 
 	/**
