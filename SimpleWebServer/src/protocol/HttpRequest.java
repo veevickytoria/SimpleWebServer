@@ -50,7 +50,7 @@ public class HttpRequest{
 	private String version;
 	private Map<String, String> header;
 	private Date requestStartTime;
-	private static long GATEWAY_TIMEOUT_IN_SECS = 10;
+	private static long GATEWAY_TIMEOUT_IN_SECS = 1;
 	
 	private HttpRequest() {
 		this.header = new HashMap<String, String>();
@@ -124,7 +124,7 @@ public class HttpRequest{
 	public static HttpRequest read(InputStream inputStream) throws Exception {
 		// We will fill this object with the data from input stream and return it
 		HttpRequest request = new HttpRequest();
-		//Thread.sleep(GATEWAY_TIMEOUT_IN_SECS*1000);
+		Thread.sleep(GATEWAY_TIMEOUT_IN_SECS*1000);
 		
 		InputStreamReader inStreamReader = new InputStreamReader(inputStream);
 		BufferedReader reader = new BufferedReader(inStreamReader);
@@ -201,8 +201,10 @@ public class HttpRequest{
 	
 	private void checkTimeout() throws Exception
 	{
+		logger.debug("checking time out");
 		if (new Date().getTime() - this.requestStartTime.getTime() > GATEWAY_TIMEOUT_IN_SECS*1000)
 		{
+			logger.debug("Throwing timeout exception");
 			throw new ProtocolException(Protocol.GATEWAY_TIMEOUT_CODE, Protocol.GATEWAY_TIMEOUT_TEXT);
 		}
 	}

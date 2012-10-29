@@ -126,12 +126,14 @@ public class ConnectionHandler implements Runnable {
 			// We have some sort of protocol exception. Get its status code and create response
 			// We know only two kind of exception is possible inside fromInputStream
 			// Protocol.BAD_REQUEST_CODE and Protocol.NOT_SUPPORTED_CODE
+			log.debug("Caught Protocol Exception");
 			int status = pe.getStatus();
 			if(status == Protocol.BAD_REQUEST_CODE) {
 				response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 			}else if(status == Protocol.NOT_IMPLEMENTED_CODE) {
 				response = HttpResponseFactory.create501NotImplemented(Protocol.CLOSE);
 			}else if (status == Protocol.GATEWAY_TIMEOUT_CODE) {
+				log.debug("Set gateway timeout exception");
 				response = HttpResponseFactory.create504GatewayTimedout(Protocol.CLOSE);
 			}
 		}
@@ -144,6 +146,7 @@ public class ConnectionHandler implements Runnable {
 		if(response != null) {
 			// Means there was an error, now write the response object to the socket
 			try {
+				log.debug("Writing error status response out to socket");
 				response.write(outStream);
 //				System.out.println(response);
 			}
@@ -185,21 +188,23 @@ public class ConnectionHandler implements Runnable {
 				File file = new File(rootDirectory + uri);
 				// Check if the file exists
 				if(file.exists()) {
-					//log.info("Requested File last modified at " + file.lastModified());
-					//log.info("HTTP If-Modified-Since value is: " + request.getIfModified());
+					log.info("Requested File last modified at " + file.lastModified());
+					log.info("HTTP If-Modified-Since value is: " + request.getIfModified());
 					if(file.isDirectory()) {
 						// Look for default index.html file in a directory
 						String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
 						file = new File(location);
 						if(file.exists())
 						{
-							if(file.lastModified() < request.getIfModified()) 
+							if(file.lastModified() >= request.getIfModified()) 
 							{
 								// Lets create 200 OK response
+								log.info("200 Okay created");
 								response = HttpResponseFactory.create200OK(file, Protocol.OPEN);
 							}
 							else
 							{
+								log.info("304 not modified created");
 								response = HttpResponseFactory.create304NotModified(Protocol.OPEN);
 							}
 						
@@ -211,19 +216,21 @@ public class ConnectionHandler implements Runnable {
 					}
 					else { // Its a file
 						//That's just way too big.  Deny the request.
-						if(file.getTotalSpace() > (1024*1024*1024))
+						if(file.length() > (1024*1024*1024))
 						{
 							log.warn("File requested greater than 1GB in size!  Denying request");
 							response = HttpResponseFactory.create403Forbidden(Protocol.CLOSE);
 						}
 						//Not modified since last retrieval
-						else if(file.lastModified() <= request.getIfModified())
+						else if(file.lastModified() >= request.getIfModified())
 						{
+							log.info("304 not modified created");
 							response = HttpResponseFactory.create304NotModified(Protocol.OPEN);
 						}
 						// Lets create 200 OK response, if not modified since If-Modified-Since
 						else
 						{
+							log.info("200 okay created");
 							response = HttpResponseFactory.create200OK(file, Protocol.OPEN);
 						}
 					}

@@ -33,6 +33,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 /**
  * 
  * @author Michael Eaton, Victoria Zheng
@@ -43,7 +45,7 @@ public class ResponseCSVLogger {
 	private static final String FILE_NAME = "ResponseLog";
 	private static final String FILE_EXTENSION = ".csv";
 	private File logFile;
-	private FileWriter writer;
+	private Logger logger;
 	
 	public static ResponseCSVLogger getInstance()
 	{
@@ -56,12 +58,13 @@ public class ResponseCSVLogger {
 	
 	private ResponseCSVLogger()
 	{
+		this.logger = Logger.getLogger(ResponseCSVLogger.class);
 		Date date = new Date();
 		String dateString = date.getMonth() + "-" + date.getDate() + "-" + date.getTime();
 		File log = new File(FILE_NAME + dateString + FILE_EXTENSION);
 		if(log.exists())
 		{
-			this.logFile = new File(FILE_NAME);
+			this.logFile = log;
 		}
 		else
 		{
@@ -73,19 +76,14 @@ public class ResponseCSVLogger {
 				return;
 			}
 		}
-		
-		try {
-			this.writer = new FileWriter(this.logFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 	}
 	
 	public void logTurnaroundValue(long message)
 	{
 		try {
-			this.writer.write(message + ",");
+			FileWriter writer = new FileWriter(this.logFile);
+			writer.write(message + ",");
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -93,11 +91,6 @@ public class ResponseCSVLogger {
 	
 	public void closeWriter()
 	{
-		try {
-			this.writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return;
 	}
 }
