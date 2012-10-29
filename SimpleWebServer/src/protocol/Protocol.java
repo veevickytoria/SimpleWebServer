@@ -64,6 +64,9 @@ public class Protocol {
     
     public static final int NOT_IMPLEMENTED_CODE = 501;
     public static final String NOT_IMPLEMENTED_TEXT = "HTTP Version Not Implemented";
+    
+    public static final int GATEWAY_TIMEOUT_CODE = 504;
+    public static final String GATEWAY_TIMEOUT_TEXT = "Gateway Timeout";
 
     // Some useful header elements in request
     public static final String HOST = "Host";

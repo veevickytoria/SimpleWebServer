@@ -166,4 +166,12 @@ public class HttpResponseFactory {
 		fillGeneralHeader(response, connection);
 		return response;
 	}
+	
+	public static HttpResponse create504GatewayTimedout(String connection)
+	{
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.GATEWAY_TIMEOUT_CODE,
+				Protocol.GATEWAY_TIMEOUT_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		return response;
+	}
 }
