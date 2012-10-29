@@ -95,6 +95,23 @@ public class ConnectionHandler implements Runnable {
 		// Now lets create a HttpRequest object
 		HttpRequest request = null;
 		HttpResponse response = null;
+		
+		//Deal with blacklisted stuff
+		if(this.server.Blacklist.isBlacklisted(this.socket.getInetAddress()))
+		{
+			response = HttpResponseFactory.create401AccessDenied(Protocol.CLOSE);
+			log.warn("Blacklisted Address attemped access!");
+			try {
+				response.write(outStream);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			server.incrementConnections(1);
+			long end = System.currentTimeMillis();
+			this.server.incrementServiceTime(end-start);
+			return;
+		}
 		try {
 			request = HttpRequest.read(inStream);
 //			System.out.println(request);

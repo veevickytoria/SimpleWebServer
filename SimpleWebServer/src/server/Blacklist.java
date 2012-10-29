@@ -30,20 +30,73 @@ package server;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+import org.apache.log4j.Logger;
 
 /**
  * 
  * @author Chandan R. Rupakheti (rupakhcr@clarkson.edu)
  */
 public class Blacklist {
-/*	
 	private ArrayList<InetAddress> list;
 	
-	private static final InetAddress blacklisted1 = new InetAddress());
-	
-	public BlackList()
+	public Blacklist()
 	{
+		//Logger log = Logger.getLogger(Blacklist.class);
+		this.list = new ArrayList<InetAddress>();
+		try {
+			list.add(Inet4Address.getByAddress(getBytesFromAddress("10.0.0.5")));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		
 	}
-	*/
+	
+	public boolean isBlacklisted(InetAddress check)
+	{
+		if(list.contains(check))
+			return true;
+		return false;
+	}
+	
+	public void addAddressToBlacklist(InetAddress add)
+	{
+		list.add(add);
+	}
+	
+	/**
+	 * Function to parse a string to a byte-array representing its IPv4 address
+	 * Taken from the Apache test library at: 
+	 * http://svn.apache.org/repos/asf/james/server/trunk/dnsservice-library/src/test/java/org/apache/james/dnsservice/library/inetnetwork/model/InetNetworkTest.java
+	 */
+	private static byte[] getBytesFromAddress(String address)
+	{
+		if (address.contains(".")) {
+            StringTokenizer st = new StringTokenizer(address, ".");
+            byte[] bytes = new byte[st.countTokens()];
+            int i = 0;
+            while (st.hasMoreTokens()) {
+                Integer inb = Integer.parseInt(st.nextToken());
+                bytes[i] = inb.byteValue();
+                i++;
+            }
+            return bytes;
+        } else if (address.contains(":")) {
+            StringTokenizer st = new StringTokenizer(address, ":");
+            byte[] bytes = new byte[st.countTokens() * 2];
+            int i = 0;
+            while (st.hasMoreTokens()) {
+                String token = st.nextToken();
+                bytes[i] = (byte) Integer.parseInt(token.substring(0, 2), 16);
+                i++;
+                bytes[i] = (byte) Integer.parseInt(token.substring(2, 4), 16);
+                i++;
+            }
+            return bytes;
+        }
+		return new byte[1];
+	}
 }

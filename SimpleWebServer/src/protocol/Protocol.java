@@ -53,6 +53,9 @@ public class Protocol {
     public static final int BAD_REQUEST_CODE = 400;
     public static final String BAD_REQUEST_TEXT = "Bad Request";
     
+    public static final int ACCESS_DENIED_CODE = 401;
+    public static final String ACCESS_DENIED_TEXT = "Access Denied";
+    
     public static final int NOT_FOUND_CODE = 404;
     public static final String NOT_FOUND_TEXT = "Not Found";
     

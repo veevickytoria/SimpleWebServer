@@ -150,4 +150,12 @@ public class HttpResponseFactory {
 		fillGeneralHeader(response, connection);
 		return response;
 	}
+	
+	public static HttpResponse create401AccessDenied(String connection)
+	{
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.ACCESS_DENIED_CODE,
+				Protocol.ACCESS_DENIED_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		return response;
+	}
 }

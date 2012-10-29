@@ -43,6 +43,8 @@ public class Server implements Runnable {
 	private long serviceTime;
 	
 	private WebServer window;
+	
+	public Blacklist Blacklist;
 	/**
 	 * @param rootDirectory
 	 * @param port
@@ -54,6 +56,7 @@ public class Server implements Runnable {
 		this.connections = 0;
 		this.serviceTime = 0;
 		this.window = window;
+		this.Blacklist = new Blacklist();
 	}
 
 	/**
