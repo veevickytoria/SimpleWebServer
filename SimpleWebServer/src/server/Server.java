@@ -26,6 +26,7 @@ import gui.WebServer;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * This represents a welcoming server for the incoming
@@ -38,6 +39,7 @@ public class Server implements Runnable {
 	private int port;
 	private boolean stop;
 	private ServerSocket welcomeSocket;
+	private ArrayList<InetAddress> clients;
 	
 	private long connections;
 	private long serviceTime;
@@ -54,6 +56,7 @@ public class Server implements Runnable {
 		this.connections = 0;
 		this.serviceTime = 0;
 		this.window = window;
+		this.clients = new ArrayList<InetAddress>();
 	}
 
 	/**
@@ -64,7 +67,6 @@ public class Server implements Runnable {
 	public String getRootDirectory() {
 		return rootDirectory;
 	}
-
 
 	/**
 	 * Gets the port number for this web server.

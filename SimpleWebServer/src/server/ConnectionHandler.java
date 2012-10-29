@@ -24,6 +24,7 @@ package server;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Map;
 
@@ -70,9 +71,12 @@ public class ConnectionHandler implements Runnable {
 		
 		InputStream inStream = null;
 		OutputStream outStream = null;
+		InetAddress inetAdr = null;
+		
 		
 		try {
 			inStream = this.socket.getInputStream();
+			inetAdr =  this.socket.getInetAddress();
 			outStream = this.socket.getOutputStream();
 		}
 		catch(Exception e) {

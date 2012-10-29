@@ -25,6 +25,7 @@ package protocol;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class HttpRequest {
 	 * <tt>HttpRequest</tt> object out of the raw data.
 	 * 
 	 * @param inputStream The input stream to read from.
+	 * @param inetAdr TODO
 	 * @return A <tt>HttpRequest</tt> object.
 	 * @throws Exception Throws either {@link ProtocolException} for bad request or 
 	 * {@link IOException} for socket input stream read errors.
