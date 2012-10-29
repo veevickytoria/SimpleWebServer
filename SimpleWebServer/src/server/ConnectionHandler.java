@@ -131,6 +131,8 @@ public class ConnectionHandler implements Runnable {
 				response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 			}else if(status == Protocol.NOT_IMPLEMENTED_CODE) {
 				response = HttpResponseFactory.create501NotImplemented(Protocol.CLOSE);
+			}else if (status == Protocol.GATEWAY_TIMEOUT_CODE) {
+				response = HttpResponseFactory.create504GatewayTimedout(Protocol.CLOSE);
 			}
 		}
 		catch(Exception e) {

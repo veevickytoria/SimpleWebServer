@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
@@ -41,15 +43,18 @@ import org.apache.log4j.Logger;
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
-public class HttpRequest {
+public class HttpRequest{
 	private static final Logger logger = Logger.getLogger(HttpRequest.class);
 	private String method;
 	private String uri;
 	private String version;
 	private Map<String, String> header;
+	private Date requestStartTime;
+	private static long GATEWAY_TIMEOUT_IN_SECS = 10;
 	
 	private HttpRequest() {
 		this.header = new HashMap<String, String>();
+		this.requestStartTime = new Date();
 	}
 	
 	/**
@@ -119,12 +124,15 @@ public class HttpRequest {
 	public static HttpRequest read(InputStream inputStream) throws Exception {
 		// We will fill this object with the data from input stream and return it
 		HttpRequest request = new HttpRequest();
+		//Thread.sleep(GATEWAY_TIMEOUT_IN_SECS*1000);
 		
 		InputStreamReader inStreamReader = new InputStreamReader(inputStream);
 		BufferedReader reader = new BufferedReader(inStreamReader);
 		
 		//First Request Line: GET /somedir/page.html HTTP/1.1
 		String line = reader.readLine(); // A line ends with either a \r, or a \n, or both
+		
+		request.checkTimeout();
 		
 		if(line == null) {
 			throw new ProtocolException(Protocol.BAD_REQUEST_CODE, Protocol.BAD_REQUEST_TEXT);
@@ -153,7 +161,10 @@ public class HttpRequest {
 		// We will convert both the strings to lower case to be able to search later
 		line = reader.readLine().trim();
 		
+		request.checkTimeout();
+		
 		while(!line.equals("")) {
+			request.checkTimeout();
 			// THIS IS A PATCH 
 			// Instead of a string tokenizer, we are using string split
 			// Lets break the line into two part with first space as a separator 
@@ -188,6 +199,13 @@ public class HttpRequest {
 		return request;
 	}
 	
+	private void checkTimeout() throws Exception
+	{
+		if (new Date().getTime() - this.requestStartTime.getTime() > GATEWAY_TIMEOUT_IN_SECS*1000)
+		{
+			throw new ProtocolException(Protocol.GATEWAY_TIMEOUT_CODE, Protocol.GATEWAY_TIMEOUT_TEXT);
+		}
+	}
 	
 	@Override
 	public String toString() {

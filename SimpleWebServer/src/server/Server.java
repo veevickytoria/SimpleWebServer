@@ -123,7 +123,6 @@ public class Server implements Runnable {
 	
 	public synchronized void addClient(InetAddress ip)
 	{
-		logger.debug("adding client");
 		ClientInfo client = this.getClient(ip);
 		if (client == null)
 		{
@@ -148,7 +147,6 @@ public class Server implements Runnable {
 			ClientInfo client = this.clients.get(i);
 			if (client.isIP(ip))
 			{
-				logger.debug("has client");
 				return client;
 			}
 		}
