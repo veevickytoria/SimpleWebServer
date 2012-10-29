@@ -22,6 +22,8 @@
  
 package protocol;
 
+import gui.WebServer;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,12 +35,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 /**
  * Represents a request object for HTTP.
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class HttpRequest {
+	private static final Logger logger = Logger.getLogger(HttpRequest.class);
 	private String method;
 	private String uri;
 	private String version;
@@ -134,9 +139,11 @@ public class HttpRequest {
 		}
 		
 		request.method = tokenizer.nextToken();		// GET
+		logger.debug("Request method: "+ request.method);
 		
-		if(request.method != Protocol.GET){
-			throw new ProtocolException(Protocol.NOT_IMPLEMENTED_CODE, Protocol.BAD_REQUEST_TEXT);
+		if(!request.method.equals(Protocol.GET)){
+			logger.debug("501 NOT IMPLEMENTED method");
+			throw new ProtocolException(Protocol.NOT_IMPLEMENTED_CODE, Protocol.NOT_IMPLEMENTED_TEXT);
 		}
 		request.uri = tokenizer.nextToken();		// /somedir/page.html
 		request.version = tokenizer.nextToken();	// HTTP/1.1

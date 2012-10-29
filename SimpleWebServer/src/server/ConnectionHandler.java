@@ -25,13 +25,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Map;
-
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import protocol.ProtocolException;
+
+import org.apache.log4j.*;
 
 /**
  * This class is responsible for handling a incoming request
@@ -67,6 +67,9 @@ public class ConnectionHandler implements Runnable {
 	public void run() {
 		// Get the start time
 		long start = System.currentTimeMillis();
+		
+		Logger log = Logger.getLogger(ConnectionHandler.class);
+		log.info("Serving request from " + this.socket.getInetAddress().getHostAddress());
 		
 		InputStream inStream = null;
 		OutputStream outStream = null;
@@ -104,7 +107,7 @@ public class ConnectionHandler implements Runnable {
 			if(status == Protocol.BAD_REQUEST_CODE) {
 				response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 			}else if(status == Protocol.NOT_IMPLEMENTED_CODE) {
-				response = HttpResponseFactory.create501NotSupported(Protocol.CLOSE);
+				response = HttpResponseFactory.create501NotImplemented(Protocol.CLOSE);
 			}
 		}
 		catch(Exception e) {
@@ -156,13 +159,24 @@ public class ConnectionHandler implements Runnable {
 				File file = new File(rootDirectory + uri);
 				// Check if the file exists
 				if(file.exists()) {
+					log.info("Requested File last modified at " + file.lastModified());
+					log.info("HTTP If-Modified-Since value is: " + request.getIfModified());
 					if(file.isDirectory()) {
 						// Look for default index.html file in a directory
 						String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
 						file = new File(location);
-						if(file.exists()) {
-							// Lets create 200 OK response
-							response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+						if(file.exists())
+						{
+							if(file.lastModified() < request.getIfModified()) 
+							{
+								// Lets create 200 OK response
+								response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+							}
+							else
+							{
+								response = HttpResponseFactory.create304NotModified(Protocol.CLOSE);
+							}
+						
 						}
 						else {
 							// File does not exist so lets create 404 file not found code
@@ -170,8 +184,16 @@ public class ConnectionHandler implements Runnable {
 						}
 					}
 					else { // Its a file
-						// Lets create 200 OK response
-						response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+						// Lets create 200 OK response, if not modified since If-Modified-Since
+						if(file.lastModified() > request.getIfModified())
+						{
+							response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+						}
+						//Not modified since last retrieval
+						else
+						{
+							response = HttpResponseFactory.create304NotModified(Protocol.CLOSE);
+						}
 					}
 				}
 				else {
