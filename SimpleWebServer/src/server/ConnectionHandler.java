@@ -43,6 +43,7 @@ import org.apache.log4j.*;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class ConnectionHandler implements Runnable {
+	private static final Logger logger = Logger.getLogger(ConnectionHandler.class);
 	private Server server;
 	private Socket socket;
 	
@@ -70,7 +71,7 @@ public class ConnectionHandler implements Runnable {
 		long start = System.currentTimeMillis();
 		
 		Logger log = Logger.getLogger(ConnectionHandler.class);
-		log.info("Serving request from " + this.socket.getInetAddress().getHostAddress());
+		//log.info("Serving request from " + this.socket.getInetAddress().getHostAddress());
 		
 		InputStream inStream = null;
 		OutputStream outStream = null;
@@ -182,8 +183,8 @@ public class ConnectionHandler implements Runnable {
 				File file = new File(rootDirectory + uri);
 				// Check if the file exists
 				if(file.exists()) {
-					log.info("Requested File last modified at " + file.lastModified());
-					log.info("HTTP If-Modified-Since value is: " + request.getIfModified());
+					//log.info("Requested File last modified at " + file.lastModified());
+					//log.info("HTTP If-Modified-Since value is: " + request.getIfModified());
 					if(file.isDirectory()) {
 						// Look for default index.html file in a directory
 						String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
@@ -250,6 +251,7 @@ public class ConnectionHandler implements Runnable {
 		
 		// Increment number of connections by 1
 		server.incrementConnections(1);
+		server.addClient(inetAdr);
 		// Get the end time
 		long end = System.currentTimeMillis();
 		this.server.incrementServiceTime(end-start);

@@ -42,8 +42,8 @@ public class ClientInfo {
 	private InetAddress IP;
 	private Date startTime;
 	private int request;
-	private static int TIMEOUT_IN_MINS = 10;
-	private static int REQUEST_COUNT_LIMIT = 1000;
+	private static int TIMEOUT_IN_MINS = 1;
+	private static int REQUEST_COUNT_LIMIT = 10000;
 	
 	public ClientInfo(InetAddress ip)
 	{
@@ -55,7 +55,7 @@ public class ClientInfo {
 	public synchronized void incrementRequest()
 	{
 		this.request++;
-		logger.info(this.IP.toString() + "has requested from the server "+this.request+"times.");
+		logger.info(this.IP.toString() + "has requested from the server "+this.request+" times.");
 	}
 	
 	public boolean isIP(InetAddress ip)
