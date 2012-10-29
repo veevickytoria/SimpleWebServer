@@ -158,4 +158,12 @@ public class HttpResponseFactory {
 		fillGeneralHeader(response, connection);
 		return response;
 	}
+	
+	public static HttpResponse create403Forbidden(String connection)
+	{
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.FORBIDDEN_CODE,
+				Protocol.FORBIDDEN_TEXT, new HashMap<String, String>(), null);
+		fillGeneralHeader(response, connection);
+		return response;
+	}
 }

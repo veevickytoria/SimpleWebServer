@@ -194,35 +194,41 @@ public class ConnectionHandler implements Runnable {
 							if(file.lastModified() < request.getIfModified()) 
 							{
 								// Lets create 200 OK response
-								response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+								response = HttpResponseFactory.create200OK(file, Protocol.OPEN);
 							}
 							else
 							{
-								response = HttpResponseFactory.create304NotModified(Protocol.CLOSE);
+								response = HttpResponseFactory.create304NotModified(Protocol.OPEN);
 							}
 						
 						}
 						else {
 							// File does not exist so lets create 404 file not found code
-							response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
+							response = HttpResponseFactory.create404NotFound(Protocol.OPEN);
 						}
 					}
 					else { // Its a file
-						// Lets create 200 OK response, if not modified since If-Modified-Since
-						if(file.lastModified() > request.getIfModified())
+						//That's just way too big.  Deny the request.
+						if(file.getTotalSpace() > (1024*1024*1024))
 						{
-							response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+							log.warn("File requested greater than 1GB in size!  Denying request");
+							response = HttpResponseFactory.create403Forbidden(Protocol.CLOSE);
 						}
 						//Not modified since last retrieval
+						else if(file.lastModified() <= request.getIfModified())
+						{
+							response = HttpResponseFactory.create304NotModified(Protocol.OPEN);
+						}
+						// Lets create 200 OK response, if not modified since If-Modified-Since
 						else
 						{
-							response = HttpResponseFactory.create304NotModified(Protocol.CLOSE);
+							response = HttpResponseFactory.create200OK(file, Protocol.OPEN);
 						}
 					}
 				}
 				else {
 					// File does not exist so lets create 404 file not found code
-					response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
+					response = HttpResponseFactory.create404NotFound(Protocol.OPEN);
 				}
 			}
 		}

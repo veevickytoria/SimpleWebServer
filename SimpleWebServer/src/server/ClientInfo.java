@@ -65,6 +65,7 @@ public class ClientInfo {
 	
 	public boolean isAnAttacker()
 	{
+		/*
 		//REQUEST_COUNT_LIMIT requests of the same file in a TIMEOUT_IN_MINS window.
 		if (this.request > REQUEST_COUNT_LIMIT){
 			Date now = new Date();
@@ -73,5 +74,7 @@ public class ClientInfo {
 		}else{
 			return false;
 		}
+		*/
+		return false;
 	}
 }

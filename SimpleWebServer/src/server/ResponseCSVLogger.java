@@ -31,6 +31,7 @@ package server;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 
@@ -39,7 +40,8 @@ import java.io.IOException;
 public class ResponseCSVLogger {
 	
 	private static ResponseCSVLogger instance;
-	private static final String FILE_NAME = "ResponseLog.csv";
+	private static final String FILE_NAME = "ResponseLog";
+	private static final String FILE_EXTENSION = ".csv";
 	private File logFile;
 	private FileWriter writer;
 	
@@ -54,7 +56,9 @@ public class ResponseCSVLogger {
 	
 	private ResponseCSVLogger()
 	{
-		File log = new File(FILE_NAME);
+		Date date = new Date();
+		String dateString = date.getMonth() + "-" + date.getDate() + "-" + date.getTime();
+		File log = new File(FILE_NAME + dateString + FILE_EXTENSION);
 		if(log.exists())
 		{
 			this.logFile = new File(FILE_NAME);
@@ -73,7 +77,6 @@ public class ResponseCSVLogger {
 		try {
 			this.writer = new FileWriter(this.logFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
